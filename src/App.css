@@ -22,3 +22,12 @@ body {
   font-size: 1.1rem;
   margin-bottom: 50px;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Navbar eka fixed nisa section eka uda hanguwanam meka use karanna */
+section {
+  scroll-margin-top: 80px; 
+}

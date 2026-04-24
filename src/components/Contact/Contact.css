@@ -1,0 +1,136 @@
+.contact-section {
+  padding: 100px 0;
+  background-color: #0a0a0a;
+  color: #fff;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.contact-header {
+  margin-bottom: 60px;
+}
+
+.contact-header .subheader {
+  color: #6c63ff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.contact-header h2 {
+  font-size: 2.2rem;
+  max-width: 600px;
+}
+
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Info side eka podiyට form side eka lokuwa */
+  gap: 50px;
+  align-items: start;
+}
+
+/* Contact Info Styling */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.info-item .icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(108, 99, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #6c63ff;
+  border: 1px solid rgba(108, 99, 255, 0.2);
+}
+
+.info-item h4 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.info-item p {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+/* Form Styling */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.contact-form input, 
+.contact-form textarea {
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 15px 20px;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.contact-form input:focus, 
+.contact-form textarea:focus {
+  border-color: #6c63ff;
+  background: #161616;
+}
+
+.submit-btn {
+  background: #6c63ff;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  align-self: flex-start;
+}
+
+.submit-btn:hover {
+  background: #5a52e6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .contact-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .input-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-container {
+    padding: 0 20px;
+  }
+}
