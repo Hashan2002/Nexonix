@@ -3,6 +3,8 @@
   --bg-dark: #0a0a0a;
   --text-gray: #a0a0a0;
   --text-white: #ffffff;
+  --nav-height: 80px;
+  --nav-mobile-top: 70px; /* CSS Variable for top value */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -10,16 +12,19 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 25px 0;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
   z-index: 1000;
   transition: var(--transition);
   background: transparent;
 }
 
-/* Scroll karaddi ena style eka */
 .navbar.scrolled {
-  padding: 15px 0;
+  height: 70px;
   background: rgba(10, 10, 10, 0.85);
+  /* Safari Support */
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -30,6 +35,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 0 40px;
 }
 
@@ -38,12 +44,9 @@
   font-weight: 900;
   color: var(--text-white);
   letter-spacing: 2px;
-  cursor: pointer;
 }
 
-.logo .dot {
-  color: var(--primary-color);
-}
+.logo .dot { color: var(--primary-color); }
 
 .nav-links {
   display: flex;
@@ -60,101 +63,15 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: var(--transition);
-}
-
-.nav-links a:hover {
-  color: var(--primary-color);
-}
-
-/* Contact Button eka Highlight karanna */
-.nav-cta {
-  background: var(--primary-color);
-  color: white !important;
-  padding: 10px 22px;
-  border-radius: 4px;
-  font-weight: 600 !important;
-}
-
-.nav-cta:hover {
-  background: #5a52e6;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
-}
-
-/* Hamburger Animation */
-.hamburger {
-  display: none;
-  cursor: pointer;
-}
-
-.bar {
-  display: block;
-  width: 25px;
-  height: 2px;
-  margin: 5px auto;
-  transition: var(--transition);
-  background-color: var(--text-white);
-}
-
-@media (max-width: 768px) {
-  .hamburger { display: block; }
-
-  /* Hamburger to X animation */
-  .hamburger.active .bar:nth-child(2) { opacity: 0; }
-  .hamburger.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-  .nav-links {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    flex-direction: column;
-    background: var(--bg-dark);
-    width: 100%;
-    height: 100vh;
-    justify-content: center;
-    transition: 0.5s;
-    gap: 30px;
-  }
-
-  .nav-links.open { left: 0; }
-}
-
-/* Active Link Styling */
-.nav-links a.active {
-  color: var(--primary-color);
-  position: relative;
-}
-
-/* Link ekata yatin ena lassana line eka */
-.nav-links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--primary-color);
-  transition: var(--transition);
-}
-
-/* Contact Button eka active unama podi pulse effect ekak */
-.nav-cta.active-cta {
-  background: #5a52e6;
-  box-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
-}
-
-/* Smooth transition for active state */
-.nav-links a {
   position: relative;
   padding-bottom: 5px;
 }
 
-/* Link hover effect highlight wenna kalin */
+/* Active & Hover Underline Effect */
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -5px;
+  bottom: 0;
   left: 0;
   width: 0;
   height: 2px;
@@ -162,6 +79,62 @@
   transition: var(--transition);
 }
 
-.nav-links a:hover::after {
+.nav-links a:hover::after,
+.nav-links a.active::after {
   width: 100%;
+}
+
+.nav-links a.active { color: var(--primary-color); }
+
+.nav-cta {
+  background: var(--primary-color);
+  color: white !important;
+  padding: 10px 22px;
+  border-radius: 4px;
+}
+
+.nav-cta.active-cta {
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
+}
+
+/* Hamburger Button Reset */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 1001;
+}
+
+.bar {
+  display: block;
+  width: 25px;
+  height: 2px;
+  margin: 5px auto;
+  background-color: var(--text-white);
+  transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  
+  .hamburger.active .bar:nth-child(2) { opacity: 0; }
+  .hamburger.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .nav-links {
+    position: fixed;
+    top: var(--nav-mobile-top);
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - var(--nav-mobile-top));
+    background: var(--bg-dark);
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.5s ease-in-out;
+    gap: 30px;
+  }
+
+  .nav-links.open { left: 0; }
 }
