@@ -1,5 +1,5 @@
 import React from 'react';
-import './Services.css'; // CSS file eka import karaganna
+import './Services.css';
 
 function Services() {
   // Oya danna balaporoththu wena services methana template ekak widihata thiyenawa.
