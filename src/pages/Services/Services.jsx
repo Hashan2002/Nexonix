@@ -3,6 +3,7 @@ import './Services.css';
 
 const servicesList = [
   {
+    id: 'web-design',
     icon: '⬡',
     title: 'Web Design & Development',
     description: 'Pixel-perfect, responsive websites crafted with performance and purpose — built to convert visitors into clients.',
@@ -10,30 +11,35 @@ const servicesList = [
     featured: true,
   },
   {
+    id: 'ui-ux',
     icon: '◈',
     title: 'UI/UX Design',
     description: 'Intuitive interfaces grounded in user psychology. Every interaction is intentional, every flow frictionless.',
     tags: ['Figma', 'Prototyping'],
   },
   {
+    id: 'digital-marketing',
     icon: '◎',
     title: 'Digital Marketing',
     description: 'Data-driven strategies that amplify reach and generate measurable results across channels.',
     tags: ['SEO', 'Analytics'],
   },
   {
+    id: 'software-development',
     icon: '⬢',
     title: 'Software Development',
     description: 'Scalable, maintainable software engineered for complexity — from MVPs to enterprise-grade systems.',
     tags: ['Node.js', 'Python'],
   },
   {
+    id: 'brand-identity',
     icon: '△',
     title: 'Brand Identity',
     description: 'A brand is a story told consistently. We craft your visual language from the ground up.',
     tags: ['Logo', 'Strategy'],
   },
   {
+    id: 'mobile-apps',
     icon: '◇',
     title: 'Mobile App Development',
     description: 'Cross-platform iOS and Android apps with native-grade performance and a design that users love.',
@@ -67,7 +73,7 @@ function Services() {
         <div className="services-bento">
           {servicesList.map((service, index) => (
             <div
-              key={index}
+              key={service.id}
               className={`svc-card ${service.featured ? 'svc-card--featured' : ''} ${service.wide ? 'svc-card--wide' : ''} ${hovered === index ? 'svc-card--active' : ''}`}
               onMouseEnter={() => setHovered(index)}
               onMouseLeave={() => setHovered(null)}
@@ -86,7 +92,6 @@ function Services() {
                   <div className="svc-icon-box">
                     <span className="svc-icon">{service.icon}</span>
                   </div>
-                  
                 </div>
 
                 {/* Content */}
@@ -98,8 +103,8 @@ function Services() {
                 {/* Footer */}
                 <div className="svc-card-foot">
                   <div className="svc-tags">
-                    {service.tags.map((tag, i) => (
-                      <span key={i} className="svc-tag">{tag}</span>
+                    {service.tags.map((tag, tagIndex) => (
+                      <span key={`${service.id}-${tagIndex}`} className="svc-tag">{tag}</span>
                     ))}
                   </div>
                   <span className="svc-arrow">
