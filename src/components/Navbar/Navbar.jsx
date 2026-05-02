@@ -1,86 +1,137 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Navbar.css';
 
+const navItems = [
+  { id: 'home',     label: 'Home'     },
+  { id: 'about',    label: 'About'    },
+  { id: 'services', label: 'Services' },
+  { id: 'projects', label: 'Projects' },
+];
+
 function Navbar() {
-  const [menuOpen, setMenuOpen]       = useState(false);
-  const [scrolled, setScrolled]       = useState(false);
+  const [menuOpen, setMenuOpen]           = useState(false);
+  const [scrolled, setScrolled]           = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [scrollProgress, setScrollProgress] = useState(0);
   const menuRef = useRef(null);
 
-  useEffect(() => {
-    /* ── scroll handler ── */
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+  /* ── Scroll handler: scrolled flag + progress bar ── */
+  const handleScroll = useCallback(() => {
+    const y   = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
 
-    /* ── section observer ── */
+    setScrolled(y > 40);
+    setScrollProgress(max > 0 ? (y / max) * 100 : 0);
+  }, []);
+
+  /* ── Section observer ── */
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) setActiveSection(entry.target.id);
         });
       },
-      { root: null, rootMargin: '-150px 0px -150px 0px', threshold: 0.3 }
+      { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 }
     );
-    document.querySelectorAll('section').forEach((s) => observer.observe(s));
+    document.querySelectorAll('section[id]').forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
 
-    /* ── click-outside to close mobile menu ── */
+  /* ── Scroll + click-outside listeners ── */
+  useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('mousedown', handleClickOutside);
-      document.querySelectorAll('section').forEach((s) => observer.unobserve(s));
     };
+  }, [handleScroll]);
+
+  /* ── Lock body scroll when mobile menu is open ── */
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
+  /* ── Smooth scroll on link click ── */
+  const handleNavClick = useCallback((e, id) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, []);
 
-  const close = () => setMenuOpen(false);
-
-  const navItems = [
-    { id: 'home',     label: 'Home'     },
-    { id: 'about',    label: 'About'    },
-    { id: 'services', label: 'Services' },
-    { id: 'projects', label: 'Projects' },
-  ];
+  /* ── Keyboard: close menu on Escape ── */
+  useEffect(() => {
+    const onKeyDown = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <nav
-      className={`navbar ${scrolled ? 'scrolled' : ''}`}
+      className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}
       aria-label="Main navigation"
     >
+      {/* ── Scroll progress bar ── */}
+      <div
+        className="navbar-progress"
+        style={{ width: `${scrollProgress}%` }}
+        aria-hidden="true"
+      />
+
       <div className="navbar-container" ref={menuRef}>
 
         {/* ── Logo ── */}
-        <div className="logo" aria-label="NEXONIX home">
-          NEXONIX<span className="dot">.</span>
-        </div>
+        <a
+          href="#home"
+          className="logo"
+          aria-label="NEXONIX — back to top"
+          onClick={(e) => handleNavClick(e, 'home')}
+        >
+          NEXONIX<span className="logo-dot">.</span>
+        </a>
 
-        {/* ── Nav Links ── */}
-        <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
-          {navItems.map(({ id, label }) => (
-            <li key={id}>
+        {/* ── Desktop + Mobile Nav Links ── */}
+        <ul
+          id="nav-links"
+          className={`nav-links ${menuOpen ? 'nav-links--open' : ''}`}
+          role="menubar"
+        >
+          {navItems.map(({ id, label }, i) => (
+            <li
+              key={id}
+              role="none"
+              style={{ '--stagger': i }}
+            >
               <a
                 href={`#${id}`}
-                className={activeSection === id ? 'active' : ''}
-                onClick={close}
+                role="menuitem"
+                className={`nav-link ${activeSection === id ? 'nav-link--active' : ''}`}
+                onClick={(e) => handleNavClick(e, id)}
                 aria-current={activeSection === id ? 'page' : undefined}
               >
                 {label}
+                <span className="nav-link-underline" aria-hidden="true" />
               </a>
             </li>
           ))}
 
-          {/* CTA */}
-          <li>
+          {/* ── CTA button ── */}
+          <li role="none" style={{ '--stagger': navItems.length }}>
             <a
               href="#contact"
-              className={`nav-cta ${activeSection === 'contact' ? 'active-cta' : ''}`}
-              onClick={close}
+              role="menuitem"
+              className={`nav-cta ${activeSection === 'contact' ? 'nav-cta--active' : ''}`}
+              onClick={(e) => handleNavClick(e, 'contact')}
               aria-current={activeSection === 'contact' ? 'page' : undefined}
             >
               Contact Us
@@ -88,17 +139,24 @@ function Navbar() {
           </li>
         </ul>
 
+        {/* ── Mobile overlay backdrop ── */}
+        <div
+          className={`nav-backdrop ${menuOpen ? 'nav-backdrop--show' : ''}`}
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
+
         {/* ── Hamburger ── */}
         <button
-          className={`hamburger ${menuOpen ? 'active' : ''}`}
-          onClick={() => setMenuOpen(!menuOpen)}
+          className={`hamburger ${menuOpen ? 'hamburger--open' : ''}`}
+          onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
           aria-expanded={menuOpen}
           aria-controls="nav-links"
         >
-          <span className="bar" />
-          <span className="bar" />
-          <span className="bar" />
+          <span className="bar bar--top"    />
+          <span className="bar bar--mid"    />
+          <span className="bar bar--bot"    />
         </button>
 
       </div>
