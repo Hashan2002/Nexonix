@@ -41,8 +41,8 @@ const highlights = [
 ];
 
 const teamMembers = [
-  { initial: 'A', name: 'Alex Rivera', role: 'Full-Stack Architect' },
-  { initial: 'M', name: 'Morgan Chen', role: 'Creative Technologist' },
+  { initial: 'H', name: 'Hashan Tharaka', role: 'Full-Stack Software Engineer' },
+  { initial: 'P', name: 'Pahan Tharaka', role: 'Full-Stack Software Engineer' },
 ];
 
 // ==================== ANIMATED BAR COMPONENT ====================
