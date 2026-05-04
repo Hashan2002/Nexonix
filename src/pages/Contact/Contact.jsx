@@ -46,7 +46,7 @@ function Contact() {
               <div className="info-text">
                 <h4>Email</h4>
                 <p>pahan@nexonix.com</p>
-                 <p>hashan@nexonix.com</p>
+                <p>hashan@nexonix.com</p>
               </div>
             </div>
 
@@ -109,7 +109,7 @@ function Contact() {
             <button type="submit" className="submit-btn">
               Send Message
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M3 13L13 3M13 3H7M13 3V9" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 13L13 3M13 3H7M13 3V9" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
