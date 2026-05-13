@@ -34,7 +34,7 @@ function Contact() {
           <div className="contact-info">
 
             <div className="info-item">
-              <div className="info-icon">📍</div>
+              <div className="info-icon">⚲</div>
               <div className="info-text">
                 <h4>Location</h4>
                 <p>Kurunegala, Sri Lanka</p>
@@ -42,7 +42,7 @@ function Contact() {
             </div>
 
             <div className="info-item">
-              <div className="info-icon">✉️</div>
+              <div className="info-icon">✉</div>
               <div className="info-text">
                 <h4>Email</h4>
                 <p>pahan@nexonix.com</p>
@@ -51,17 +51,12 @@ function Contact() {
             </div>
 
             <div className="info-item">
-              <div className="info-icon">📱</div>
+              <div className="info-icon">☎</div>
               <div className="info-text">
                 <h4>Phone</h4>
                 <p>+94 7X XXX XXXX</p>
                 <p>+94 7X XXX XXXX</p>
               </div>
-            </div>
-
-            <div className="availability-badge">
-              <span className="badge-dot"></span>
-              <span>Available for new projects</span>
             </div>
 
           </div>

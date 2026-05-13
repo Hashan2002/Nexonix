@@ -1,6 +1,6 @@
 .contact-section {
-  padding: 120px 0;
-  background: var(--bg);
+  padding: 30px 0 120px;
+  background: transparent;
   color: var(--text-primary);
   position: relative;
   overflow: hidden;
@@ -328,7 +328,7 @@
 
 @media (max-width: 640px) {
   .contact-section {
-    padding: 80px 0;
+    padding: 20px 0 80px;
   }
   .contact-container {
     padding: 0 20px;

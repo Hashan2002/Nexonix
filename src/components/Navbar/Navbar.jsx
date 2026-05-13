@@ -2,22 +2,22 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Navbar.css';
 
 const navItems = [
-  { id: 'home',     label: 'Home'     },
-  { id: 'about',    label: 'About'    },
+  { id: 'home', label: 'Home' },
   { id: 'services', label: 'Services' },
   { id: 'projects', label: 'Projects' },
+  { id: 'about', label: 'About' },
 ];
 
 function Navbar() {
-  const [menuOpen, setMenuOpen]           = useState(false);
-  const [scrolled, setScrolled]           = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [scrollProgress, setScrollProgress] = useState(0);
   const menuRef = useRef(null);
 
   /* ── Scroll handler: scrolled flag + progress bar ── */
   const handleScroll = useCallback(() => {
-    const y   = window.scrollY;
+    const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
 
     setScrolled(y > 40);
@@ -25,18 +25,39 @@ function Navbar() {
   }, []);
 
   /* ── Section observer ── */
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) setActiveSection(entry.target.id);
+  //       });
+  //     },
+  //     { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+  //   );
+  //   document.querySelectorAll('section[id]').forEach((s) => observer.observe(s));
+  //   return () => observer.disconnect();
+  // }, []);
+
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { root: null, rootMargin: '-40% 0px -40% 0px', threshold: 0 }
-    );
-    document.querySelectorAll('section[id]').forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
+    const handleSectionDetect = () => {
+      const sections = document.querySelectorAll('section[id]');
+      const scrollY = window.scrollY + 120; // offset for navbar height
+
+      sections.forEach((section) => {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+
+        if (scrollY >= top && scrollY < top + height) {
+          setActiveSection(section.id);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleSectionDetect, { passive: true });
+    handleSectionDetect(); // run on mount
+
+    return () => window.removeEventListener('scroll', handleSectionDetect);
+  }, []);;
 
   /* ── Scroll + click-outside listeners ── */
   useEffect(() => {
@@ -154,9 +175,9 @@ function Navbar() {
           aria-expanded={menuOpen}
           aria-controls="nav-links"
         >
-          <span className="bar bar--top"    />
-          <span className="bar bar--mid"    />
-          <span className="bar bar--bot"    />
+          <span className="bar bar--top" />
+          <span className="bar bar--mid" />
+          <span className="bar bar--bot" />
         </button>
 
       </div>
