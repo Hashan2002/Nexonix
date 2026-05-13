@@ -34,7 +34,7 @@ function Contact() {
           <div className="contact-info">
 
             <div className="info-item">
-              <div className="info-icon">📍</div>
+              <div className="info-icon">⚲</div>
               <div className="info-text">
                 <h4>Location</h4>
                 <p>Kurunegala, Sri Lanka</p>
@@ -42,26 +42,21 @@ function Contact() {
             </div>
 
             <div className="info-item">
-              <div className="info-icon">✉️</div>
+              <div className="info-icon">✉</div>
               <div className="info-text">
                 <h4>Email</h4>
                 <p>pahan@nexonix.com</p>
-                 <p>hashan@nexonix.com</p>
+                <p>hashan@nexonix.com</p>
               </div>
             </div>
 
             <div className="info-item">
-              <div className="info-icon">📱</div>
+              <div className="info-icon">☎</div>
               <div className="info-text">
                 <h4>Phone</h4>
                 <p>+94 7X XXX XXXX</p>
                 <p>+94 7X XXX XXXX</p>
               </div>
-            </div>
-
-            <div className="availability-badge">
-              <span className="badge-dot"></span>
-              <span>Available for new projects</span>
             </div>
 
           </div>
@@ -109,7 +104,7 @@ function Contact() {
             <button type="submit" className="submit-btn">
               Send Message
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M3 13L13 3M13 3H7M13 3V9" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 13L13 3M13 3H7M13 3V9" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
 
