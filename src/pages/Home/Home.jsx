@@ -25,7 +25,7 @@ const Home = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    🚀 Software Development Company
+                    Software Development Company
                 </motion.div>
 
                 {/* Headline */}

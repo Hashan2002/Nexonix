@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { fadeUp, staggerContainer, staggerItem } from '../../hooks/scrollVariants';
+import { useParallax } from '../../hooks/useParallax';
 import './Services.css';
 
 const servicesList = [
@@ -50,12 +54,23 @@ const servicesList = [
 
 function Services() {
   const [hovered, setHovered] = useState(null);
+  const header = useScrollReveal();
+  const grid = useScrollReveal();
+  const offsetX = useParallax(0.04);
 
   return (
     <section id="services" className="services-section">
       <div className="services-container">
 
-        <header className="services-header">
+        {/* Header */}
+        <motion.header
+          className="services-header"
+          ref={header.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={header.isInView ? 'visible' : 'hidden'}
+          style={{ x: offsetX }}
+        >
           <div className="services-label">
             <span className="services-label-line" />
             <span>What I Offer</span>
@@ -68,39 +83,42 @@ function Services() {
               End-to-end digital solutions — from first sketch to shipped product.
             </p>
           </div>
-        </header>
+        </motion.header>
 
-        <div className="services-bento">
+        {/* Bento Grid */}
+        <motion.div
+          className="services-bento"
+          ref={grid.ref}
+          variants={staggerContainer}
+          initial="hidden"
+          animate={grid.isInView ? 'visible' : 'hidden'}
+        >
           {servicesList.map((service, index) => (
-            <div
+            <motion.div
               key={service.id}
+              variants={staggerItem}
               className={`svc-card ${service.featured ? 'svc-card--featured' : ''} ${service.wide ? 'svc-card--wide' : ''} ${hovered === index ? 'svc-card--active' : ''}`}
               onMouseEnter={() => setHovered(index)}
               onMouseLeave={() => setHovered(null)}
             >
-              {/* Ghost number watermark */}
               <div className="svc-watermark" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </div>
 
-              {/* Top accent sweep */}
               <div className="svc-sweep" />
 
               <div className="svc-card-inner">
-                {/* Header row */}
                 <div className="svc-card-top">
                   <div className="svc-icon-box">
                     <span className="svc-icon">{service.icon}</span>
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className="svc-card-body">
                   <h3 className="svc-title">{service.title}</h3>
                   <p className="svc-desc">{service.description}</p>
                 </div>
 
-                {/* Footer */}
                 <div className="svc-card-foot">
                   <div className="svc-tags">
                     {service.tags.map((tag, tagIndex) => (
@@ -114,9 +132,9 @@ function Services() {
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

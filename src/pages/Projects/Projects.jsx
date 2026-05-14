@@ -1,5 +1,9 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { fadeUp, fadeLeft, fadeRight, staggerContainer, staggerItem } from '../../hooks/scrollVariants';
 import './Projects.css';
+import { useParallax } from '../../hooks/useParallax';
 
 const CATEGORIES = ['All', 'Web', 'Mobile', 'Brand', 'Software'];
 
@@ -7,8 +11,7 @@ const projects = [
   {
     id: 'ecommerce',
     title: 'ShopLux E-Commerce Platform',
-    description:
-      'A high-performance storefront with AI-powered recommendations, real-time inventory, and a headless CMS architecture. Handles 50k+ daily transactions.',
+    description: 'A high-performance storefront with AI-powered recommendations, real-time inventory, and a headless CMS architecture. Handles 50k+ daily transactions.',
     category: 'Web',
     tags: ['React', 'Next.js', 'Stripe', 'Tailwind'],
     icon: '⬡',
@@ -72,6 +75,7 @@ const ExternalIcon = () => (
 );
 
 function FeaturedVisual() {
+
   return (
     <div className="feat-visual">
       <div className="feat-glow" />
@@ -109,10 +113,7 @@ function FeaturedVisual() {
 function ProjectCard({ project }) {
   return (
     <div className="proj-card">
-      {/* Top sweep */}
       <div className="proj-sweep" />
-
-      {/* Visual zone */}
       <div className="proj-visual">
         <div className="proj-vis-art">
           <div className="proj-shape proj-shape--a" />
@@ -121,11 +122,7 @@ function ProjectCard({ project }) {
           <div className="proj-shape proj-shape--d" />
           <div className="proj-icon-center">{project.icon}</div>
         </div>
-
-        {/* Year chip */}
         <div className="proj-year">{project.year}</div>
-
-        {/* Hover overlay */}
         <div className="proj-overlay">
           <button type="button" className="proj-overlay-btn proj-overlay-btn--solid">
             Live <ExternalIcon />
@@ -135,8 +132,6 @@ function ProjectCard({ project }) {
           </button>
         </div>
       </div>
-
-      {/* Content */}
       <div className="proj-content">
         <div className="proj-category">{project.category}</div>
         <h3 className="proj-title">{project.title}</h3>
@@ -147,9 +142,7 @@ function ProjectCard({ project }) {
               <span key={tag} className="proj-stack-item">{tag}</span>
             ))}
           </div>
-          <span className="proj-link-icon">
-            <ArrowIcon />
-          </span>
+          <span className="proj-link-icon"><ArrowIcon /></span>
         </div>
       </div>
     </div>
@@ -159,7 +152,13 @@ function ProjectCard({ project }) {
 function Projects() {
   const [activeFilter, setActiveFilter] = useState('All');
 
-  const featured = projects.find((p) => p.featured);
+  const header = useScrollReveal();
+  const filters = useScrollReveal();
+  const featured = useScrollReveal();
+  const grid = useScrollReveal();
+  const cta = useScrollReveal();
+
+  const featuredProject = projects.find((p) => p.featured);
   const gridProjects = projects.filter((p) => !p.featured);
 
   const filteredGrid = useMemo(() => {
@@ -167,12 +166,22 @@ function Projects() {
     return gridProjects.filter((p) => p.category === activeFilter);
   }, [activeFilter, gridProjects]);
 
+  const offsetX = useParallax(0.035);
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
 
-        {/* ── Header ── */}
-        <header className="projects-header">
+        {/* Header */}
+        <motion.header
+          className="projects-header"
+          ref={header.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={header.isInView ? 'visible' : 'hidden'}
+          style={{ x: offsetX }}
+
+        >
           <div>
             <div className="projects-label">
               <span className="projects-label-line" />
@@ -185,10 +194,18 @@ function Projects() {
           <p className="projects-subtext">
             A curated set of builds — from product launches to internal tools, each solving a real problem.
           </p>
-        </header>
+        </motion.header>
 
-        {/* ── Filters ── */}
-        <div className="projects-filters" role="tablist" aria-label="Filter projects by category">
+        {/* Filters */}
+        <motion.div
+          className="projects-filters"
+          ref={filters.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={filters.isInView ? 'visible' : 'hidden'}
+          role="tablist"
+          aria-label="Filter projects by category"
+        >
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -200,25 +217,30 @@ function Projects() {
               {cat}
             </button>
           ))}
-        </div>
+        </motion.div>
 
-        {/* ── Featured project ── */}
-        {(activeFilter === 'All' || activeFilter === featured.category) && (
-          <div className="projects-featured" role="article">
+        {/* Featured project */}
+        {(activeFilter === 'All' || activeFilter === featuredProject.category) && (
+          <motion.div
+            className="projects-featured"
+            ref={featured.ref}
+            initial="hidden"
+            animate={featured.isInView ? 'visible' : 'hidden'}
+            role="article"
+          >
             <div className="feat-inner">
-              {/* Left — content */}
-              <div className="feat-content">
+              <motion.div className="feat-content" variants={fadeLeft}>
                 <div>
                   <div className="feat-badge">
                     <span className="feat-badge-dot" />
                     Featured Project
                   </div>
-                  <h3 className="feat-title">{featured.title}</h3>
-                  <p className="feat-desc">{featured.description}</p>
+                  <h3 className="feat-title">{featuredProject.title}</h3>
+                  <p className="feat-desc">{featuredProject.description}</p>
                 </div>
                 <div className="feat-meta">
                   <div className="feat-tags">
-                    {featured.tags.map((tag) => (
+                    {featuredProject.tags.map((tag) => (
                       <span key={tag} className="feat-tag">{tag}</span>
                     ))}
                   </div>
@@ -231,25 +253,43 @@ function Projects() {
                     </button>
                   </div>
                 </div>
-              </div>
-
-              {/* Right — visual */}
-              <FeaturedVisual />
+              </motion.div>
+              <motion.div variants={fadeRight}>
+                <FeaturedVisual />
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* ── Project grid ── */}
-        {filteredGrid.length > 0 && (
-          <div className="projects-grid">
-            {filteredGrid.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
+        {/* Project grid */}
+        <AnimatePresence mode="wait">
+          {filteredGrid.length > 0 && (
+            <motion.div
+              key={activeFilter}
+              className="projects-grid"
+              ref={grid.ref}
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            >
+              {filteredGrid.map((project) => (
+                <motion.div key={project.id} variants={staggerItem}>
+                  <ProjectCard project={project} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* ── Bottom CTA ── */}
-        <div className="projects-cta">
+        {/* CTA */}
+        <motion.div
+          className="projects-cta"
+          ref={cta.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={cta.isInView ? 'visible' : 'hidden'}
+        >
           <div className="cta-line" />
           <div className="cta-content">
             <span className="cta-text">Want to see more?</span>
@@ -261,7 +301,7 @@ function Projects() {
             </a>
           </div>
           <div className="cta-line" />
-        </div>
+        </motion.div>
 
       </div>
     </section>

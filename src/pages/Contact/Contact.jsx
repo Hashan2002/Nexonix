@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { fadeUp, fadeLeft, fadeRight } from '../../hooks/scrollVariants';
 import './Contact.css';
 
 function Contact() {
@@ -9,6 +12,10 @@ function Contact() {
     message: '',
   });
 
+  const header = useScrollReveal();
+  const left = useScrollReveal();
+  const right = useScrollReveal();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -16,23 +23,35 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
-    alert('Message sent! I\'ll get back to you within 24 hours.');
+    alert("Message sent! I'll get back to you within 24 hours.");
   };
 
   return (
     <section id="contact" className="contact-section">
       <div className="contact-container">
 
-        <header className="contact-header">
+        {/* Header */}
+        <motion.header
+          className="contact-header"
+          ref={header.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={header.isInView ? 'visible' : 'hidden'}
+        >
           <p className="subheader">Get In Touch</p>
           <h2>Let's build something remarkable together.</h2>
-        </header>
+        </motion.header>
 
         <div className="contact-content">
 
-          {/* ── Left: Contact Info ── */}
-          <div className="contact-info">
-
+          {/* Left: Contact Info */}
+          <motion.div
+            className="contact-info"
+            ref={left.ref}
+            variants={fadeLeft}
+            initial="hidden"
+            animate={left.isInView ? 'visible' : 'hidden'}
+          >
             <div className="info-item">
               <div className="info-icon">⚲</div>
               <div className="info-text">
@@ -58,12 +77,17 @@ function Contact() {
                 <p>+94 7X XXX XXXX</p>
               </div>
             </div>
+          </motion.div>
 
-          </div>
-
-          {/* ── Right: Contact Form ── */}
-          <form className="contact-form" onSubmit={handleSubmit}>
-
+          {/* Right: Contact Form */}
+          <motion.form
+            className="contact-form"
+            ref={right.ref}
+            variants={fadeRight}
+            initial="hidden"
+            animate={right.isInView ? 'visible' : 'hidden'}
+            onSubmit={handleSubmit}
+          >
             <div className="input-group">
               <div className="form-field">
                 <label htmlFor="name">Your Name</label>
@@ -107,8 +131,8 @@ function Contact() {
                 <path d="M3 13L13 3M13 3H7M13 3V9" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+          </motion.form>
 
-          </form>
         </div>
       </div>
     </section>

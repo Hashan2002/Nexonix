@@ -1,8 +1,9 @@
-// About.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { fadeUp, fadeLeft, fadeRight, staggerContainer, staggerItem } from '../../hooks/scrollVariants';
 import './About.css';
 
-// ==================== DATA ====================
 const stats = [
   { value: 5, label: 'Years Combined Experience', suffix: '+' },
   { value: 45, label: 'Projects Completed', suffix: '+' },
@@ -45,19 +46,12 @@ const teamMembers = [
   { initial: 'P', name: 'Pahan Tharaka', role: 'Full-Stack Software Engineer' },
 ];
 
-// ==================== ANIMATED BAR COMPONENT ====================
-const AnimatedBar = ({ level, animate }) => {
-  return (
-    <div className="skill-bar-track">
-      <div
-        className="skill-bar-fill"
-        style={{ width: animate ? `${level}%` : '0%' }}
-      />
-    </div>
-  );
-};
+const AnimatedBar = ({ level, animate }) => (
+  <div className="skill-bar-track">
+    <div className="skill-bar-fill" style={{ width: animate ? `${level}%` : '0%' }} />
+  </div>
+);
 
-// ==================== COUNTER COMPONENT ====================
 const AnimatedCounter = ({ targetValue, suffix, duration = 1200 }) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -66,68 +60,50 @@ const AnimatedCounter = ({ targetValue, suffix, duration = 1200 }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
+        if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); }
       },
       { threshold: 0.3 }
     );
-
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     if (!isVisible) return;
-
-    let startTime;
-    let animationFrame;
-    const startValue = 0;
-    const endValue = targetValue;
-
+    let startTime, animationFrame;
     const animateCount = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const currentCount = Math.floor(progress * (endValue - startValue) + startValue);
-      setCount(currentCount);
-      
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animateCount);
-      } else {
-        setCount(endValue);
-      }
+      setCount(Math.floor(progress * targetValue));
+      if (progress < 1) animationFrame = requestAnimationFrame(animateCount);
+      else setCount(targetValue);
     };
-
     animationFrame = requestAnimationFrame(animateCount);
     return () => cancelAnimationFrame(animationFrame);
   }, [isVisible, targetValue, duration]);
 
-  return (
-    <span ref={ref} className="stat-value">
-      {count}{suffix}
-    </span>
-  );
+  return <span ref={ref} className="stat-value">{count}{suffix}</span>;
 };
 
-// ==================== MAIN ABOUT COMPONENT ====================
 function About() {
   const [hoveredHighlight, setHoveredHighlight] = useState(null);
   const [barsVisible, setBarsVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const skillsRef = useRef(null);
 
+  const header = useScrollReveal();
+  const bioCard = useScrollReveal();
+  const statsCard = useScrollReveal();
+  const skillsCard = useScrollReveal();
+  const highlightCards = useScrollReveal();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setBarsVisible(true);
-          observer.disconnect();
-        }
+        if (entry.isIntersecting) { setBarsVisible(true); observer.disconnect(); }
       },
       { threshold: 0.2 }
     );
-
     if (skillsRef.current) observer.observe(skillsRef.current);
     return () => observer.disconnect();
   }, []);
@@ -141,18 +117,12 @@ function About() {
 
   const handleViewProjects = useCallback(() => {
     setToastMessage('✨ Explore our featured projects! ✨');
-    const projectsSection = document.getElementById('projects');
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const handleContactUs = useCallback(() => {
-    setToastMessage('📧 Reach out — let\'s build something great!');
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    setToastMessage("📧 Reach out — let's build something great!");
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   return (
@@ -162,26 +132,40 @@ function About() {
       <div className="about-blob about-blob--3" />
 
       <div className="about-container">
-        <header className="about-header">
+
+        {/* Header */}
+        <motion.header
+          className="about-header"
+          ref={header.ref}
+          variants={fadeUp}
+          initial="hidden"
+          animate={header.isInView ? 'visible' : 'hidden'}
+        >
           <div className="about-label">
             <span className="about-label-line" />
             <span>Who We Are</span>
           </div>
-
           <div className="about-title-row">
             <h2 className="about-heading">
               Building digital<br />products as a team.
             </h2>
             <p className="about-subtext">
-              Two creators. One vision. We design and build modern digital experiences 
+              Two creators. One vision. We design and build modern digital experiences
               that make a difference.
             </p>
           </div>
-        </header>
+        </motion.header>
 
         <div className="about-grid">
-          {/* TEAM BIO CARD */}
-          <div className="about-card about-card--bio">
+
+          {/* Bio Card */}
+          <motion.div
+            className="about-card about-card--bio"
+            ref={bioCard.ref}
+            variants={fadeLeft}
+            initial="hidden"
+            animate={bioCard.isInView ? 'visible' : 'hidden'}
+          >
             <div className="about-sweep" />
             <div className="about-watermark">TEAM</div>
             <div className="about-card-inner">
@@ -198,7 +182,6 @@ function About() {
                   </div>
                 ))}
               </div>
-
               <div className="bio-meta">
                 <h3 className="bio-name">
                   {teamMembers.map(m => m.name.split(' ')[0]).join(' & ')}
@@ -207,39 +190,36 @@ function About() {
                   {teamMembers.map(m => m.role).join(' + ')}
                 </span>
                 <div className="bio-location">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#00c9a7" strokeWidth="1.5" fill="none"/>
-                    <circle cx="12" cy="9" r="2.5" stroke="#00c9a7" strokeWidth="1.5" fill="none"/>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#00c9a7" strokeWidth="1.5" fill="none" />
+                    <circle cx="12" cy="9" r="2.5" stroke="#00c9a7" strokeWidth="1.5" fill="none" />
                   </svg>
                   Colombo, Sri Lanka
                 </div>
               </div>
-
               <div className="bio-body">
-                <p>
-                  We are a passionate duo focused on building{' '}
+                <p>We are a passionate duo focused on building{' '}
                   <span className="bio-highlight">impactful digital solutions</span> that solve real problems.
                 </p>
-                <p>
-                  Our strength lies in combining development and design to create{' '}
-                  <span className="bio-highlight">fast, scalable, and user-friendly products</span> 
-                  that users love.
+                <p>Our strength lies in combining development and design to create{' '}
+                  <span className="bio-highlight">fast, scalable, and user-friendly products</span> that users love.
                 </p>
               </div>
-
               <div className="bio-cta-row">
-                <button className="bio-cta bio-cta--primary" onClick={handleViewProjects}>
-                  View Projects →
-                </button>
-                <button className="bio-cta bio-cta--ghost" onClick={handleContactUs}>
-                  Contact Us
-                </button>
+                <button className="bio-cta bio-cta--primary" onClick={handleViewProjects}>View Projects →</button>
+                <button className="bio-cta bio-cta--ghost" onClick={handleContactUs}>Contact Us</button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* STATS CARD */}
-          <div className="about-card about-card--stats">
+          {/* Stats Card */}
+          <motion.div
+            className="about-card about-card--stats"
+            ref={statsCard.ref}
+            variants={fadeUp}
+            initial="hidden"
+            animate={statsCard.isInView ? 'visible' : 'hidden'}
+          >
             <div className="about-sweep" />
             <div className="about-card-inner">
               <p className="about-card-label">Our Impact</p>
@@ -252,10 +232,16 @@ function About() {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* SKILLS CARD */}
-          <div className="about-card about-card--skills" ref={skillsRef}>
+          {/* Skills Card */}
+          <motion.div
+            className="about-card about-card--skills"
+            ref={(el) => { skillsCard.ref.current = el; skillsRef.current = el; }}
+            variants={fadeRight}
+            initial="hidden"
+            animate={skillsCard.isInView ? 'visible' : 'hidden'}
+          >
             <div className="about-sweep" />
             <div className="about-card-inner">
               <p className="about-card-label">Tech Stack & Skills</p>
@@ -271,33 +257,39 @@ function About() {
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* HIGHLIGHT CARDS */}
-          {highlights.map((highlight, index) => (
-            <div
-              key={highlight.id}
-              className={`about-card about-card--highlight ${
-                hoveredHighlight === index ? 'about-card--active' : ''
-              }`}
-              onMouseEnter={() => setHoveredHighlight(index)}
-              onMouseLeave={() => setHoveredHighlight(null)}
-            >
-              <div className="about-sweep" />
-              <div className="about-card-inner">
-                <div className="highlight-icon-box">{highlight.icon}</div>
-                <h4 className="highlight-title">{highlight.title}</h4>
-                <p className="highlight-text">{highlight.text}</p>
-              </div>
-            </div>
-          ))}
+          {/* Highlight Cards */}
+          <motion.div
+            ref={highlightCards.ref}
+            variants={staggerContainer}
+            initial="hidden"
+            animate={highlightCards.isInView ? 'visible' : 'hidden'}
+            style={{ display: 'contents' }}
+          >
+            {highlights.map((highlight, index) => (
+              <motion.div
+                key={highlight.id}
+                variants={staggerItem}
+                className={`about-card about-card--highlight ${hoveredHighlight === index ? 'about-card--active' : ''}`}
+                onMouseEnter={() => setHoveredHighlight(index)}
+                onMouseLeave={() => setHoveredHighlight(null)}
+              >
+                <div className="about-sweep" />
+                <div className="about-card-inner">
+                  <div className="highlight-icon-box">{highlight.icon}</div>
+                  <h4 className="highlight-title">{highlight.title}</h4>
+                  <p className="highlight-text">{highlight.text}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
         </div>
       </div>
 
       {toastMessage && (
-        <div className="toast-notification">
-          {toastMessage}
-        </div>
+        <div className="toast-notification">{toastMessage}</div>
       )}
     </section>
   );

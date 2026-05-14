@@ -1,10 +1,16 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { fadeUp } from '../../hooks/scrollVariants';
 import './Footer.css';
 
 const navLinks = ['home', 'services', 'projects', 'about', 'contact'];
 const services = ['Web Design & Dev', 'UI/UX Design', 'Digital Marketing', 'Software Development', 'Brand Identity'];
 
 function Footer() {
+    const grid = useScrollReveal();
+    const bottom = useScrollReveal();
+
     const handleNavClick = (id) => {
         const target = document.getElementById(id);
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -13,8 +19,15 @@ function Footer() {
     return (
         <footer className="footer">
             <div className="footer-container">
-                <div className="footer-grid">
 
+                {/* Grid */}
+                <motion.div
+                    className="footer-grid"
+                    ref={grid.ref}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate={grid.isInView ? 'visible' : 'hidden'}
+                >
                     {/* Brand */}
                     <div className="footer-brand">
                         <div className="footer-logo">NEXONIX<span>.</span></div>
@@ -84,17 +97,26 @@ function Footer() {
                         </div>
                     </div>
 
-                </div>
+                </motion.div>
 
                 <div className="footer-divider" />
 
-                <div className="footer-bottom">
-                    <p className="footer-copy">© 2025 <span>NEXONIX</span>. All rights reserved.</p>
+                {/* Bottom */}
+                <motion.div
+                    className="footer-bottom"
+                    ref={bottom.ref}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate={bottom.isInView ? 'visible' : 'hidden'}
+                >
+                    <p className="footer-copy">© 2026 <span>NEXONIX</span>. All rights reserved.</p>
+                    <div className="footer-watermark" aria-hidden="true">NEXONIX</div>
                     <div className="footer-badge">
                         <span className="footer-badge-dot" />
                         Available for new projects
                     </div>
-                </div>
+                </motion.div>
+
             </div>
         </footer>
     );
