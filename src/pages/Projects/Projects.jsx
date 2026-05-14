@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { fadeUp, fadeLeft, fadeRight, staggerContainer, staggerItem } from '../../hooks/scrollVariants';
 import './Projects.css';
+import { useParallax } from '../../hooks/useParallax';
 
 const CATEGORIES = ['All', 'Web', 'Mobile', 'Brand', 'Software'];
 
@@ -74,6 +75,7 @@ const ExternalIcon = () => (
 );
 
 function FeaturedVisual() {
+
   return (
     <div className="feat-visual">
       <div className="feat-glow" />
@@ -164,6 +166,8 @@ function Projects() {
     return gridProjects.filter((p) => p.category === activeFilter);
   }, [activeFilter, gridProjects]);
 
+  const offsetX = useParallax(0.035);
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
@@ -175,6 +179,8 @@ function Projects() {
           variants={fadeUp}
           initial="hidden"
           animate={header.isInView ? 'visible' : 'hidden'}
+          style={{ x: offsetX }}
+
         >
           <div>
             <div className="projects-label">

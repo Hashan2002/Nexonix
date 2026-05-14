@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { fadeUp, staggerContainer, staggerItem } from '../../hooks/scrollVariants';
+import { useParallax } from '../../hooks/useParallax';
 import './Services.css';
 
 const servicesList = [
@@ -55,6 +56,7 @@ function Services() {
   const [hovered, setHovered] = useState(null);
   const header = useScrollReveal();
   const grid = useScrollReveal();
+  const offsetX = useParallax(0.04);
 
   return (
     <section id="services" className="services-section">
@@ -67,6 +69,7 @@ function Services() {
           variants={fadeUp}
           initial="hidden"
           animate={header.isInView ? 'visible' : 'hidden'}
+          style={{ x: offsetX }}
         >
           <div className="services-label">
             <span className="services-label-line" />
